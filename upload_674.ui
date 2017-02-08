@@ -14,32 +14,6 @@
    <string>Upload_674</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="btnConnect">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>60</y>
-      <width>80</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Verbinden</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblInfo">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>60</y>
-      <width>101</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
@@ -320,11 +294,6 @@ Titel = Showname, Artist = DJ-Name, Genre, Jahr Die meisten Programme fragen sch
      <string>Hochladen</string>
     </property>
    </widget>
-   <zorder>layoutWidget</zorder>
-   <zorder>btnConnect</zorder>
-   <zorder>lblInfo</zorder>
-   <zorder>groupBox</zorder>
-   <zorder>btnUpload</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -339,7 +308,6 @@ Titel = Showname, Artist = DJ-Name, Genre, Jahr Die meisten Programme fragen sch
     <property name="title">
      <string>Datei</string>
     </property>
-    <addaction name="actionVerbinden"/>
     <addaction name="actionBeenden"/>
    </widget>
    <addaction name="menuDatei"/>
@@ -360,7 +328,6 @@ Titel = Showname, Artist = DJ-Name, Genre, Jahr Die meisten Programme fragen sch
   <tabstop>leHost</tabstop>
   <tabstop>leUser</tabstop>
   <tabstop>lePass</tabstop>
-  <tabstop>btnConnect</tabstop>
   <tabstop>btnSelectFile</tabstop>
   <tabstop>leSelectFile</tabstop>
   <tabstop>rbtn1hShow</tabstop>

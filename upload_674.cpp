@@ -24,8 +24,6 @@ Upload_674::Upload_674(QWidget *parent) :
     // set the password LineEdit to password mode
     ui->lePass->setEchoMode(QLineEdit::Password);
 
-    ui->lblInfo->setText("Nicht Verbunden");
-
     // create new Tagmanager to read and perhaps write new mp3 tags
     tagMan = new TagManager();
 
@@ -47,45 +45,17 @@ Upload_674::~Upload_674()
  */
 void Upload_674::replyFinished(QNetworkReply *reply)
 {
-    if(reply->error() == QNetworkReply::NoError)
-        QMessageBox::information(this, "Hinweis", "Der Upload war erfolgreich!");
-    else {
-        QString errorString = "Es gabe einen Fehler beim Upload:\n" + reply->errorString();
-        QMessageBox::critical(this, "Fehler", errorString);
+    // check if NetworkAccessManager::Operation was "put" aka upload
+    if(reply->operation() == 3) {
+        // if there are no errors
+        if(reply->error() == QNetworkReply::NoError)
+            QMessageBox::information(this, "Hinweis", "Der Upload war erfolgreich!");
+        else {
+            QString errorString = "Es hat folgenden Fehler gegeben:\n"
+                    + reply->errorString();
+            QMessageBox::warning(this, "Fehler", errorString);
+        }
     }
-}
-
-/**
- * @brief Upload_674::on_btnConnect_clicked
- *
- */
-void Upload_674::on_btnConnect_clicked()
-{
-    if(ui->leHost->text().isEmpty()
-            || ui->leUser->text().isEmpty() || ui->lePass->text().isEmpty()) {
-        QMessageBox::information(this, "Hinweis",
-                                 "Bitte fülle den Host, das Passwort und den Username aus um dich zu verbinden.");
-     return;
-    }
-
-    host = ui->leHost->text();
-    user = ui->leUser->text();
-    pass = ui->lePass->text();
-
-    // build request for connection to ftp
-    url = QUrl("ftp://" + host);
-    url.setUserName(user);
-    url.setPassword(pass);
-    url.setPort(21);
-
-    req.setUrl(url);
-    // no reply gotten here so were not actually connecting
-
-    // TODO label wird immer auf verbunden gesetzt muss das evtl in reply finished verlegen
-    // evtl headers holen um
-    if(ftp->networkAccessible() == 1)
-        ui->lblInfo->setText("Verbunden");
-    // TODO hier noch else einfügen und fehler beim verbinden behandeln
 }
 
 /**
@@ -140,6 +110,13 @@ void Upload_674::on_btnSelectFile_clicked()
  */
 void Upload_674::on_btnUpload_clicked()
 {
+    // make sure all fields have been filled out
+    if(ui->leHost->text().isEmpty()
+            || ui->leUser->text().isEmpty() || ui->lePass->text().isEmpty()) {
+        QMessageBox::information(this, "Hinweis",
+                                 "Bitte fülle den Host, das Passwort und den Username aus um dich zu verbinden.");
+     return;
+    }
     // make sure file was selected
     if(ui->leSelectFile->text().isEmpty()) {
         QMessageBox::information(this, "Hinweis",
@@ -153,12 +130,17 @@ void Upload_674::on_btnUpload_clicked()
     // if the file can be opened create a request and upload to server
     if(file->open(QIODevice::ReadOnly)) {
         QString uploadedMixName = buildUploadFileName();
-        // cancel the method if no showname was enteres
+        // cancel the method if no showname was entered
         if(uploadedMixName == "showName not set") {
             ui->leShowName->setFocus();
             return;
         }
-        // build the url again, with uploadFileName to put the file on the server
+
+        // build the url with uploadedMixName to put the file on the server
+        host = ui->leHost->text();
+        user = ui->leUser->text();
+        pass = ui->lePass->text();
+
         url = QUrl("ftp://" + host + "/" + uploadedMixName);
         url.setUserName(user);
         url.setPassword(pass);
@@ -172,12 +154,4 @@ void Upload_674::on_btnUpload_clicked()
         QMessageBox::information(this, "Hinweis", "Die gewählte Datei konnte nicht geöffnet werden.");
         ui->leSelectFile->setFocus();
     }
-}
-/**
- * @brief Upload_674::on_actionVerbinden_triggered
- * connect via the action on the menu bar
- */
-void Upload_674::on_actionVerbinden_triggered()
-{
-    on_btnConnect_clicked();
 }
