@@ -1,0 +1,5 @@
+FTPUpload:
+
+1. Networkmanager wird erstellt.
+2. Verbindung zu FTP Server wird mit übermittelten Parametern hergestellt
+3. Methode zum Upload der Daten erstellt

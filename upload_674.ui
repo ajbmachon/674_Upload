@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Upload_674</class>
+ <widget class="QMainWindow" name="Upload_674">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>617</width>
+    <height>489</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Upload_674</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QPushButton" name="btnConnect">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>60</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Verbinden</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblInfo">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>566</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="lblHost">
+       <property name="text">
+        <string>Host:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="leHost">
+       <property name="text">
+        <string>w0152abe.kasserver.com</string>
+       </property>
+       <property name="cursorPosition">
+        <number>0</number>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblUser">
+       <property name="text">
+        <string>Username:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="leUser">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblPass">
+       <property name="text">
+        <string>Password:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lePass">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>441</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLabel" name="lbl">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>30</y>
+       <width>191</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Der Mix sollte 30-60 Sekunden kürzer als die Sendung sein.
+Mix für 1h = 0:59:00 - 0:59:30</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnSelectFile">
+     <property name="geometry">
+      <rect>
+       <x>8</x>
+       <y>98</y>
+       <width>91</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Datei wählen</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leSelectFile">
+     <property name="geometry">
+      <rect>
+       <x>102</x>
+       <y>97</y>
+       <width>171</width>
+       <height>23</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>40</y>
+       <width>106</width>
+       <height>98</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="3" column="0">
+       <widget class="QRadioButton" name="rbtn2hShow">
+        <property name="text">
+         <string>2h</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QRadioButton" name="rbtn3hShow">
+        <property name="text">
+         <string>3h</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QRadioButton" name="rbtn1hShow">
+        <property name="text">
+         <string>1h</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblRbtns">
+        <property name="text">
+         <string>Länge des Mixes:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLabel" name="lblFileFormat">
+     <property name="geometry">
+      <rect>
+       <x>8</x>
+       <y>38</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Das akzeptierte Audioformat für Mixe ist: MP3, 192kb/s</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>260</y>
+       <width>132</width>
+       <height>15</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Datum der Sendung:</string>
+     </property>
+    </widget>
+    <widget class="QDateEdit" name="dateEdit">
+     <property name="geometry">
+      <rect>
+       <x>146</x>
+       <y>254</y>
+       <width>110</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="displayFormat">
+      <string>d/M/yy</string>
+     </property>
+     <property name="calendarPopup">
+      <bool>true</bool>
+     </property>
+     <property name="date">
+      <date>
+       <year>2017</year>
+       <month>1</month>
+       <day>1</day>
+      </date>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblNameConvention">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>221</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Der Dateiname setzt sich aus dem Namen und Datum der Sendung zusammen</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>150</y>
+       <width>141</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Folgende ID3-Tags sind notwendig:
+Titel = Showname, Artist = DJ-Name, Genre, Jahr Die meisten Programme fragen schon beim abspeichern die Metadaten bzw. ID-Tags ab. Ansonsten kann man diese unter Windows auch in den Datei-Eigenschaften</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>253</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="lblShowName">
+        <property name="text">
+         <string>Name der Sendung:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="leShowName"/>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="btnUpload">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>400</y>
+      <width>91</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Hochladen</string>
+    </property>
+   </widget>
+   <zorder>layoutWidget</zorder>
+   <zorder>btnConnect</zorder>
+   <zorder>lblInfo</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>btnUpload</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>617</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuDatei">
+    <property name="title">
+     <string>Datei</string>
+    </property>
+    <addaction name="actionVerbinden"/>
+    <addaction name="actionBeenden"/>
+   </widget>
+   <addaction name="menuDatei"/>
+  </widget>
+  <action name="actionVerbinden">
+   <property name="text">
+    <string>Verbinden</string>
+   </property>
+  </action>
+  <action name="actionBeenden">
+   <property name="text">
+    <string>Beenden</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>leHost</tabstop>
+  <tabstop>leUser</tabstop>
+  <tabstop>lePass</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>btnSelectFile</tabstop>
+  <tabstop>leSelectFile</tabstop>
+  <tabstop>rbtn1hShow</tabstop>
+  <tabstop>rbtn2hShow</tabstop>
+  <tabstop>rbtn3hShow</tabstop>
+  <tabstop>leShowName</tabstop>
+  <tabstop>dateEdit</tabstop>
+  <tabstop>btnUpload</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>selectFile()</slot>
+  <slot>uploadMix()</slot>
+ </slots>
+</ui>
