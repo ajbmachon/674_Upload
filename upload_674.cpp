@@ -67,13 +67,14 @@ QString Upload_674::buildUploadFileName()
 {
     if(ui->leShowName->text().isEmpty()) {
         QMessageBox::information(this, "Hinweis","Bitte gib den Namen der Sendung ein, für die der Mix bestimmt ist");
+        ui->leShowName->setFocus();
         return "showName not set";
     }
 
     QString date = ui->dateEdit->text();
     QString showName = ui->leShowName->text();
-    // replace slashes of the date with dots
-    date.replace("/",".");
+    // delte slashes to confirm with file naming conventions
+    date.replace("/","");
     // sanetize the showname
     /**
       * TODO evtl in formular schreiben, dass keine umlaute erlaubt sind
@@ -110,6 +111,13 @@ void Upload_674::on_btnSelectFile_clicked()
  */
 void Upload_674::on_btnUpload_clicked()
 {
+    QString newName = ui->leSelectFile->text();
+
+    // cancel the method if no showname was entered
+    if(newName.isEmpty()) {
+        ui->leShowName->setFocus();
+        return;
+    }
     // make sure all fields have been filled out
     if(ui->leHost->text().isEmpty()
             || ui->leUser->text().isEmpty() || ui->lePass->text().isEmpty()) {
@@ -117,6 +125,7 @@ void Upload_674::on_btnUpload_clicked()
                                  "Bitte fülle den Host, das Passwort und den Username aus um dich zu verbinden.");
      return;
     }
+
     // make sure file was selected
     if(ui->leSelectFile->text().isEmpty()) {
         QMessageBox::information(this, "Hinweis",
@@ -126,15 +135,11 @@ void Upload_674::on_btnUpload_clicked()
     }
 
     // create new QFile from user selection
-    file = new QFile(ui->leSelectFile->text());
+    file = new QFile(newName);
     // if the file can be opened create a request and upload to server
     if(file->open(QIODevice::ReadOnly)) {
         QString uploadedMixName = buildUploadFileName();
-        // cancel the method if no showname was entered
-        if(uploadedMixName == "showName not set") {
-            ui->leShowName->setFocus();
-            return;
-        }
+        tagMan->setFile(newName);
 
         // build the url with uploadedMixName to put the file on the server
         host = ui->leHost->text();

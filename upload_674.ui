@@ -54,7 +54,7 @@
      <item>
       <widget class="QLineEdit" name="leUser">
        <property name="text">
-        <string/>
+        <string>f00c70d2</string>
        </property>
       </widget>
      </item>
@@ -68,7 +68,7 @@
      <item>
       <widget class="QLineEdit" name="lePass">
        <property name="text">
-        <string/>
+        <string>XYFAz4kmu</string>
        </property>
       </widget>
      </item>
