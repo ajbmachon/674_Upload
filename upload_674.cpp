@@ -4,6 +4,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QNetworkReply>
+//#include <QDialog>
+//#include <QFormLayout>
+//#include <QDialogButtonBox>
+#include <QInputDialog>
 
 #include <QDebug>
 
@@ -41,10 +45,13 @@ Upload_674::~Upload_674()
 /**
  * @brief Upload_674::replyFinished
  * @param reply
- *
+ * TODO maybee file size on Server after upload to file size
  */
 void Upload_674::replyFinished(QNetworkReply *reply)
 {
+    // TODO this gets called even when no upload is done because for instance
+    // show name was not set
+
     // check if NetworkAccessManager::Operation was "put" aka upload
     if(reply->operation() == 3) {
         // if there are no errors
@@ -65,12 +72,6 @@ void Upload_674::replyFinished(QNetworkReply *reply)
  */
 QString Upload_674::buildUploadFileName()
 {
-    if(ui->leShowName->text().isEmpty()) {
-        QMessageBox::information(this, "Hinweis","Bitte gib den Namen der Sendung ein, für die der Mix bestimmt ist");
-        ui->leShowName->setFocus();
-        return "showName not set";
-    }
-
     QString date = ui->dateEdit->text();
     QString showName = ui->leShowName->text();
     // delte slashes to confirm with file naming conventions
@@ -118,6 +119,13 @@ void Upload_674::on_btnUpload_clicked()
         ui->leShowName->setFocus();
         return;
     }
+
+    if(ui->leShowName->text().isEmpty()) {
+        QMessageBox::information(this, "Hinweis","Bitte gib den Namen der Sendung ein, für die der Mix bestimmt ist");
+        ui->leShowName->setFocus();
+        return;
+    }
+
     // make sure all fields have been filled out
     if(ui->leHost->text().isEmpty()
             || ui->leUser->text().isEmpty() || ui->lePass->text().isEmpty()) {
@@ -135,13 +143,31 @@ void Upload_674::on_btnUpload_clicked()
     }
 
     // create new QFile from user selection
+    tagMan->setFile(newName);
     file = new QFile(newName);
+
     // if the file can be opened create a request and upload to server
     if(file->open(QIODevice::ReadOnly)) {
-        QString uploadedMixName = buildUploadFileName();
-        tagMan->setFile(newName);
+        // set mp3 tags for upload file
+        // set "title" to the name of the show
+        tagMan->setTitle(ui->leShowName->text());
+
+        // if artist mp3 tag ist empty we make a dialoge to set it
+        QString artist = tagMan->getArtist();
+        if(artist.isEmpty()) {
+            bool ok;
+            QString text = QInputDialog::getText(
+                        this, tr("Bitte gib deinen Arist Namen ein"),
+                        tr("mp3 tag Artist:"), QLineEdit::Normal,
+                        "", &ok);
+            if (ok && !text.isEmpty())
+                tagMan->setArtist(text);
+            // upload button has to be clicked again if artist had to be set
+            return;
+        }
 
         // build the url with uploadedMixName to put the file on the server
+        QString uploadedMixName = buildUploadFileName();
         host = ui->leHost->text();
         user = ui->leUser->text();
         pass = ui->lePass->text();
