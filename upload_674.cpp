@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QNetworkReply>
+#include <QInputDialog>
 
 #include <QDebug>
 
@@ -24,9 +25,7 @@ Upload_674::Upload_674(QWidget *parent) :
     // set the password LineEdit to password mode
     ui->lePass->setEchoMode(QLineEdit::Password);
 
-    ui->lblInfo->setText("Nicht Verbunden");
-
-    // create new Tagmanager to read and perhaps write new mp3 tags
+    // create new Tagmanager to read and write mp3 tags
     tagMan = new TagManager();
 
 }
@@ -43,49 +42,24 @@ Upload_674::~Upload_674()
 /**
  * @brief Upload_674::replyFinished
  * @param reply
- *
+ * TODO maybee file size on Server after upload to file size
  */
 void Upload_674::replyFinished(QNetworkReply *reply)
 {
-    if(reply->error() == QNetworkReply::NoError)
-        QMessageBox::information(this, "Hinweis", "Der Upload war erfolgreich!");
-    else {
-        QString errorString = "Es gabe einen Fehler beim Upload:\n" + reply->errorString();
-        QMessageBox::critical(this, "Fehler", errorString);
+    // TODO this gets called even when no upload is done because for instance
+    // show name was not set
+
+    // check if NetworkAccessManager::Operation was "put" aka upload
+    if(reply->operation() == 3) {
+        // if there are no errors
+        if(reply->error() == QNetworkReply::NoError)
+            QMessageBox::information(this, "Hinweis", "Der Upload war erfolgreich!");
+        else {
+            QString errorString = "Es hat folgenden Fehler gegeben:\n"
+                    + reply->errorString();
+            QMessageBox::warning(this, "Fehler", errorString);
+        }
     }
-}
-
-/**
- * @brief Upload_674::on_btnConnect_clicked
- *
- */
-void Upload_674::on_btnConnect_clicked()
-{
-    if(ui->leHost->text().isEmpty()
-            || ui->leUser->text().isEmpty() || ui->lePass->text().isEmpty()) {
-        QMessageBox::information(this, "Hinweis",
-                                 "Bitte fülle den Host, das Passwort und den Username aus um dich zu verbinden.");
-     return;
-    }
-
-    host = ui->leHost->text();
-    user = ui->leUser->text();
-    pass = ui->lePass->text();
-
-    // build request for connection to ftp
-    url = QUrl("ftp://" + host);
-    url.setUserName(user);
-    url.setPassword(pass);
-    url.setPort(21);
-
-    req.setUrl(url);
-    // no reply gotten here so were not actually connecting
-
-    // TODO label wird immer auf verbunden gesetzt muss das evtl in reply finished verlegen
-    // evtl headers holen um
-    if(ftp->networkAccessible() == 1)
-        ui->lblInfo->setText("Verbunden");
-    // TODO hier noch else einfügen und fehler beim verbinden behandeln
 }
 
 /**
@@ -95,20 +69,11 @@ void Upload_674::on_btnConnect_clicked()
  */
 QString Upload_674::buildUploadFileName()
 {
-    if(ui->leShowName->text().isEmpty()) {
-        QMessageBox::information(this, "Hinweis","Bitte gib den Namen der Sendung ein, für die der Mix bestimmt ist");
-        return "showName not set";
-    }
-
     QString date = ui->dateEdit->text();
     QString showName = ui->leShowName->text();
-    // replace slashes of the date with dots
-    date.replace("/",".");
+    // delte slashes to confirm with file naming conventions
+    date.replace("/","");
     // sanetize the showname
-    /**
-      * TODO evtl in formular schreiben, dass keine umlaute erlaubt sind
-      * evtl QValidator einsetzen wenn nötig
-      */
     showName.replace("/",".");
     showName.replace("\\", ".");
     showName.replace(":", ".");
@@ -118,6 +83,30 @@ QString Upload_674::buildUploadFileName()
 
     QString uploadFileName = showName + "_" + date + ".mp3";
     return uploadFileName;
+}
+
+
+bool Upload_674::durationRight()
+{
+    int duration = tagMan->getSeconds();
+    // check which radiobutton is checked and set according duration in seconds
+    if(ui->rbtn1hShow->isChecked()) {
+//        intendedDuration = 3600;
+        // file should length should be at least 30 seconds shorter so we check
+        // for 3570, also file should not be too short so we check its within 5mins
+        if(duration > 3570 || duration < 3300)
+            return false;
+    }
+    if(ui->rbtn2hShow->isChecked()) {
+        if(duration > 7170 || duration < 6900)
+            return false;
+    }
+    else {
+        if(duration > 10770 || duration < 10500)
+            return false;
+    }
+
+    return true;
 }
 
 /**
@@ -140,6 +129,28 @@ void Upload_674::on_btnSelectFile_clicked()
  */
 void Upload_674::on_btnUpload_clicked()
 {
+    QString newName = ui->leSelectFile->text();
+
+    // cancel the method if no showname was entered
+    if(newName.isEmpty()) {
+        ui->leShowName->setFocus();
+        return;
+    }
+
+    if(ui->leShowName->text().isEmpty()) {
+        QMessageBox::information(this, "Hinweis","Bitte gib den Namen der Sendung ein, für die der Mix bestimmt ist");
+        ui->leShowName->setFocus();
+        return;
+    }
+
+    // make sure all fields have been filled out
+    if(ui->leHost->text().isEmpty()
+            || ui->leUser->text().isEmpty() || ui->lePass->text().isEmpty()) {
+        QMessageBox::information(this, "Hinweis",
+                                 "Bitte fülle den Host, das Passwort und den Username aus um dich zu verbinden.");
+     return;
+    }
+
     // make sure file was selected
     if(ui->leSelectFile->text().isEmpty()) {
         QMessageBox::information(this, "Hinweis",
@@ -149,16 +160,43 @@ void Upload_674::on_btnUpload_clicked()
     }
 
     // create new QFile from user selection
-    file = new QFile(ui->leSelectFile->text());
+    tagMan->setFile(newName);
+    file = new QFile(newName);
+
+    if(!durationRight()) {
+        int minutes = tagMan->getSeconds() / 60;
+        int seconds = tagMan->getSeconds() % 60;
+        QString error = "Dateilänge: " + QString::number(minutes) + ":" + QString::number(seconds);
+        QMessageBox::information(this, "Bitte Dateilänge anpassen", error);
+        return;
+    }
+
     // if the file can be opened create a request and upload to server
     if(file->open(QIODevice::ReadOnly)) {
-        QString uploadedMixName = buildUploadFileName();
-        // cancel the method if no showname was enteres
-        if(uploadedMixName == "showName not set") {
-            ui->leShowName->setFocus();
+        // set mp3 tags for upload file
+        // set "title" to the name of the show
+        tagMan->setTitle(ui->leShowName->text());
+
+        // if artist mp3 tag ist empty we make a dialoge to set it
+        QString artist = tagMan->getArtist();
+        if(artist.isEmpty()) {
+            bool ok;
+            QString text = QInputDialog::getText(
+                        this, tr("Bitte gib deinen Arist Namen ein"),
+                        tr("mp3 tag Artist:"), QLineEdit::Normal,
+                        "", &ok);
+            if (ok && !text.isEmpty())
+                tagMan->setArtist(text);
+            // upload button has to be clicked again if artist had to be set
             return;
         }
-        // build the url again, with uploadFileName to put the file on the server
+
+        // build the url with uploadedMixName to put the file on the server
+        QString uploadedMixName = buildUploadFileName();
+        host = ui->leHost->text();
+        user = ui->leUser->text();
+        pass = ui->lePass->text();
+
         url = QUrl("ftp://" + host + "/" + uploadedMixName);
         url.setUserName(user);
         url.setPassword(pass);
@@ -172,12 +210,4 @@ void Upload_674::on_btnUpload_clicked()
         QMessageBox::information(this, "Hinweis", "Die gewählte Datei konnte nicht geöffnet werden.");
         ui->leSelectFile->setFocus();
     }
-}
-/**
- * @brief Upload_674::on_actionVerbinden_triggered
- * connect via the action on the menu bar
- */
-void Upload_674::on_actionVerbinden_triggered()
-{
-    on_btnConnect_clicked();
 }

@@ -32,25 +32,20 @@ private:
     QNetworkRequest req;
     QNetworkReply *reply;
 
-//    bool fileSelected;
-
     QString buildUploadFileName();
-    // TODO methoden zum regeln prüfen
+    bool durationRight();
 
 public:
     explicit Upload_674(QWidget *parent = 0);
     ~Upload_674();
 
 public slots:
-    void replyFinished(QNetworkReply *reply);
-
-    void on_btnConnect_clicked();
-    void on_btnSelectFile_clicked();
-    void on_btnUpload_clicked();
-    // TODO slots für die buttons fertig schreiben
 
 private slots:
-    void on_actionVerbinden_triggered();
+    void replyFinished(QNetworkReply *reply);
+
+    void on_btnSelectFile_clicked();
+    void on_btnUpload_clicked();
 };
 
 #endif // UPLOAD_674_H
