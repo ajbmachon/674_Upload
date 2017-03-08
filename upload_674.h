@@ -33,6 +33,7 @@ private:
     QNetworkReply *reply;
 
     QString buildUploadFileName();
+    bool durationRight();
 
 public:
     explicit Upload_674(QWidget *parent = 0);

@@ -23,13 +23,15 @@ public:
     QString getGenre() const;
     void setGenre(const String &value);
 
+    int getSeconds() const;
+
 private:
     FileRef *file;
     String title;
     String artist;
     String genre;
     FileName name;
-
+    int seconds;
 };
 
 #endif // TAGMANAGER_H

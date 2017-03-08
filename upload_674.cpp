@@ -4,9 +4,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QNetworkReply>
-//#include <QDialog>
-//#include <QFormLayout>
-//#include <QDialogButtonBox>
 #include <QInputDialog>
 
 #include <QDebug>
@@ -28,7 +25,7 @@ Upload_674::Upload_674(QWidget *parent) :
     // set the password LineEdit to password mode
     ui->lePass->setEchoMode(QLineEdit::Password);
 
-    // create new Tagmanager to read and perhaps write new mp3 tags
+    // create new Tagmanager to read and write mp3 tags
     tagMan = new TagManager();
 
 }
@@ -77,10 +74,6 @@ QString Upload_674::buildUploadFileName()
     // delte slashes to confirm with file naming conventions
     date.replace("/","");
     // sanetize the showname
-    /**
-      * TODO evtl in formular schreiben, dass keine umlaute erlaubt sind
-      * evtl QValidator einsetzen wenn nötig
-      */
     showName.replace("/",".");
     showName.replace("\\", ".");
     showName.replace(":", ".");
@@ -90,6 +83,30 @@ QString Upload_674::buildUploadFileName()
 
     QString uploadFileName = showName + "_" + date + ".mp3";
     return uploadFileName;
+}
+
+
+bool Upload_674::durationRight()
+{
+    int duration = tagMan->getSeconds();
+    // check which radiobutton is checked and set according duration in seconds
+    if(ui->rbtn1hShow->isChecked()) {
+//        intendedDuration = 3600;
+        // file should length should be at least 30 seconds shorter so we check
+        // for 3570, also file should not be too short so we check its within 5mins
+        if(duration > 3570 || duration < 3300)
+            return false;
+    }
+    if(ui->rbtn2hShow->isChecked()) {
+        if(duration > 7170 || duration < 6900)
+            return false;
+    }
+    else {
+        if(duration > 10770 || duration < 10500)
+            return false;
+    }
+
+    return true;
 }
 
 /**
@@ -145,6 +162,14 @@ void Upload_674::on_btnUpload_clicked()
     // create new QFile from user selection
     tagMan->setFile(newName);
     file = new QFile(newName);
+
+    if(!durationRight()) {
+        int minutes = tagMan->getSeconds() / 60;
+        int seconds = tagMan->getSeconds() % 60;
+        QString error = "Dateilänge: " + QString::number(minutes) + ":" + QString::number(seconds);
+        QMessageBox::information(this, "Bitte Dateilänge anpassen", error);
+        return;
+    }
 
     // if the file can be opened create a request and upload to server
     if(file->open(QIODevice::ReadOnly)) {

@@ -29,21 +29,13 @@ void TagManager::setFile(const QString filePath)
       * and you should use QFile::encodeName(filePath).constData().
       */
     file = new FileRef(QFile::encodeName(filePath).constData());
-    // duration seems to be slightly wrong
-    // TODO fix duration
-    int seconds = file->audioProperties()->length() % 60;
-    int minutes = (file->audioProperties()->length() - seconds) / 60;
-    qDebug() << minutes;
-    // set artist and title from mp3 tags
-    Tag *t = file->tag();
 
+    // set duration
+    seconds = file->audioProperties()->lengthInSeconds();
+    // set artist and title from mp3 tags
     artist = file->tag()->artist();
     title = file->tag()->title();
     genre = file->tag()->genre();
-
-    // TODO set tile with value of showname
-//    file->tag()->setArtist("Test Artist");
-
 }
 
 QString TagManager::getTitle() const
@@ -84,4 +76,9 @@ QString TagManager::getGenre() const
 void TagManager::setGenre(const String &value)
 {
     genre = value;
+}
+
+int TagManager::getSeconds() const
+{
+    return seconds;
 }
